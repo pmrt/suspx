@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"image"
 	"image/color"
 	"image/png"
@@ -55,9 +56,18 @@ func (c *Canvas) Set(x, y int, rawpx *RawPixel) {
 	parseHex(px, rawpx.Hex)
 }
 
+var ErrModerationTool = errors.New("coordinates from the moderation rect tool")
+
 func parseCoord(pos string) (x int, y int, err error) {
 	pos = strings.ReplaceAll(pos, "\"", "")
 	parts := strings.Split(pos, ",")
+
+	if len(parts) == 4 {
+		// moderation rect tool
+		err = ErrModerationTool
+		return
+
+	}
 
 	if x, err = strconv.Atoi(parts[0]); err != nil {
 		return

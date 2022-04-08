@@ -76,9 +76,14 @@ func (s *Simulation) Run() *Simulation {
 				ts, name, hex, pos := row[0], row[1], row[2], row[3]
 				x, y, err := parseCoord(pos)
 				if err != nil {
+					if errors.Is(err, ErrModerationTool) {
+						// skip pixels by moderation rect tool
+						continue
+					}
 					panic(err)
 				}
-				t, err := time.Parse("2006-01-02 15:04:05.999999999 MST", ts)
+
+				t, err := time.Parse("2006-01-02 15:04:05.999 MST", ts)
 				if err != nil {
 					panic(err)
 				}
