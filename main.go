@@ -21,7 +21,12 @@ func main() {
 		"width:%d; height:%d; SusThreshold:%d; TimeMargin:%d; TimeCooldown:%d\n",
 		width, height, threshold, margin, cd,
 	)
-	fmt.Printf("Datasets: %v\n", flag.Args())
+
+	datasets := flag.Args()
+	if len(datasets) == 0 {
+		datasets = orderCSV()
+	}
+	fmt.Printf("Datasets: %v\n", datasets)
 
 	NewSimulation(SimulationOptions{
 		// Canvas size
@@ -34,7 +39,7 @@ func main() {
 		SusThreshold: threshold,
 		TimeMargin:   time.Millisecond * time.Duration(margin),
 		TimeCooldown: time.Minute * time.Duration(cd),
-		Datasets:     flag.Args(),
+		Datasets:     datasets,
 	}).
 		Setup().
 		Run().
