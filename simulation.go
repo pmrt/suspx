@@ -83,7 +83,7 @@ func (s *Simulation) Run() *Simulation {
 					panic(err)
 				}
 
-				t, err := time.Parse("2006-01-02 15:04:05.999 MST", ts)
+				t, err := time.Parse(TimeLayout, ts)
 				if err != nil {
 					panic(err)
 				}

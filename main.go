@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+const TimeLayout = "2006-01-02 15:04:05.999 MST"
+
 var (
 	width     int
 	height    int
