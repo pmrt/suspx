@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/csv"
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"time"
@@ -45,7 +46,10 @@ func (s *Simulation) Suspicious(rawpx *RawPixel) bool {
 }
 
 func (s *Simulation) Run() *Simulation {
-	for _, dataset := range s.Datasets {
+	l := len(s.Datasets)
+	fmt.Printf("Simulating pixels... [0/%d]", l)
+	for i, dataset := range s.Datasets {
+		fmt.Printf("\rSimulating pixels... [%d/%d]", i+1, l)
 		f, err := os.Open(dataset)
 		if err != nil {
 			panic(err)
@@ -105,6 +109,7 @@ func (s *Simulation) Run() *Simulation {
 			}
 		}()
 	}
+	fmt.Printf("\n")
 	return s
 }
 
