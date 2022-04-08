@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 	"time"
 )
 
@@ -13,9 +14,16 @@ var (
 	margin    int
 	cd        int
 	out       string
+	download  bool
 )
 
 func main() {
+	if download {
+		downloadAll()
+		fmt.Println("[+] All parts downloaded. decompress and re-run with the desired parameters")
+		os.Exit(0)
+	}
+
 	fmt.Println("Running simulation with following parameters:")
 	fmt.Printf(
 		"width:%d; height:%d; SusThreshold:%d; TimeMargin:%d; TimeCooldown:%d\n",
@@ -53,6 +61,7 @@ func init() {
 	flag.IntVar(&threshold, "threshold", 3, "Suspicious threshold. Above this threshold of consecutive pixels, the following consecutive pixels will be drawn.")
 	flag.IntVar(&margin, "margin", 500, "Time margin (ms) from the cooldown to consider a pixel suspicious")
 	flag.IntVar(&cd, "cd", 5, "Time cooldown (min) considered for the cooldown")
+	flag.BoolVar(&download, "d", false, "If ")
 	flag.StringVar(&out, "o", "res.png", "Resulting PNG filename (default: res.png)")
 	flag.Parse()
 }

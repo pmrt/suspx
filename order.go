@@ -32,8 +32,11 @@ type Filestats struct {
 func orderCSV() []string {
 	datasets := findCSV(".")
 
-	// hashtable of first rows to files
-	// rowtable := make(map[string]string, len(datasets))
+	if len(datasets) == 0 {
+		panic("No CSV datasets found in current path")
+	}
+
+	// slice with file details for later sorting
 	filestats := make([]*Filestats, 0, len(datasets))
 
 	for _, dataset := range datasets {
@@ -51,7 +54,7 @@ func orderCSV() []string {
 		if err != nil {
 			panic(err)
 		}
-		t, err := time.Parse("2006-01-02 15:04:05.999 MST", peek[0])
+		t, err := time.Parse(TimeLayout, peek[0])
 		if err != nil {
 			panic(err)
 		}
