@@ -20,22 +20,28 @@ type RawPixel struct {
 }
 
 type PixelBucket struct {
-	cap    int
-	bucket []*Pixel
+	threshold int
+	// Number of suspicious pixels in the bucket
+	sus int
+	// Last pixel by the same user
+	LastPx *RawPixel
 }
 
-func (b *PixelBucket) Append(px *Pixel) {
-	b.bucket = append(b.bucket, px)
+func (b *PixelBucket) Add(n int) {
+	b.sus = b.sus + n
+}
+
+func (b *PixelBucket) Reset() {
+	b.sus = 0
 }
 
 func (b *PixelBucket) isFull() bool {
-	return len(b.bucket) >= b.cap
+	return b.sus >= b.threshold
 }
 
 func NewPixelBucket(n int) *PixelBucket {
 	b := &PixelBucket{
-		cap:    n,
-		bucket: make([]*Pixel, 0, n),
+		threshold: n,
 	}
 	return b
 }

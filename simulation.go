@@ -9,10 +9,12 @@ import (
 )
 
 type SimulationOptions struct {
-	Width      int
-	Height     int
-	BucketSize string
-	Datasets   []string
+	Width        int
+	Height       int
+	SusThreshold int
+	Datasets     []string
+	TimeMargin   time.Duration
+	TimeCooldown time.Duration
 }
 
 type Simulation struct {
@@ -21,57 +23,94 @@ type Simulation struct {
 	ht     Hashtable
 }
 
-func (s *Simulation) Setup() {
+func (s *Simulation) Setup() *Simulation {
 	s.canvas = NewCanvas(s.Width, s.Height)
 	s.canvas.FillEmpty()
+	return s
 }
 
-func (s *Simulation) IsEligible(rawpx RawPixel) bool {
-	return true
+// Suspicious determines if the given pixel is worth storing in the
+// Suspicious bucket.
+func (s *Simulation) Suspicious(rawpx *RawPixel) bool {
+	bucket := s.ht[rawpx.Name]
+	last := bucket.LastPx
+
+	if last == nil {
+		// first pixel of the user
+		return false
+	}
+
+	delta := rawpx.At.Sub(last.At).Milliseconds()
+	return delta < (s.TimeCooldown.Milliseconds() + s.TimeMargin.Milliseconds())
 }
 
-func (s *Simulation) Run() {
+func (s *Simulation) Run() *Simulation {
 	for _, dataset := range s.Datasets {
 		f, err := os.Open(dataset)
 		if err != nil {
 			panic(err)
 		}
-		defer f.Close()
 
-		r := csv.NewReader(f)
-		// Skip header
-		if _, err := r.Read(); err != nil {
-			panic(err)
-		}
-		for {
-			row, err := r.Read()
-			if err != nil {
-				if errors.Is(err, io.EOF) {
-					break
+		// wrap in a func so we can defer Close() and avoid future memory leaks
+		// because we forgot a Close()
+		func() {
+			defer f.Close()
+			r := csv.NewReader(f)
+			// Skip header
+			if _, err := r.Read(); err != nil {
+				panic(err)
+			}
+			for {
+				row, err := r.Read()
+				if err != nil {
+					if errors.Is(err, io.EOF) {
+						break
+					}
+					panic(err)
 				}
-				panic(err)
-			}
 
-			ts, name, hex, pos := row[0], row[1], row[2], row[3]
-			x, y, err := parseCoord(pos)
-			if err != nil {
-				panic(err)
-			}
-			t, err := time.Parse("2006-01-02 15:04:05.999999999 MST", ts)
-			if err != nil {
-				panic(err)
-			}
+				ts, name, hex, pos := row[0], row[1], row[2], row[3]
+				x, y, err := parseCoord(pos)
+				if err != nil {
+					panic(err)
+				}
+				t, err := time.Parse("2006-01-02 15:04:05.999999999 MST", ts)
+				if err != nil {
+					panic(err)
+				}
+				if s.ht[name] == nil {
+					// ensure the bucket is always initialized
+					s.ht[name] = NewPixelBucket(s.SusThreshold)
+				}
 
-			raw := RawPixel{
-				Name: name,
-				At:   t,
-				Hex:  hex,
+				raw := &RawPixel{
+					Name: name,
+					At:   t,
+					Hex:  hex,
+				}
+				bucket := s.ht[name]
+				// If the sus threshold is surpassed, the following consecutive
+				// suspicious pixels are drawn on the canvas
+				if s.Suspicious(raw) {
+					if bucket.isFull() {
+						s.canvas.Set(x, y, raw)
+					} else {
+						bucket.Add(1)
+					}
+				} else {
+					// Reset the bucket otherwise so we only draw consecutive pixels
+					bucket.Reset()
+				}
+				bucket.LastPx = raw
 			}
-			if s.IsEligible(raw) {
-				s.canvas.Set(x, y, raw)
-			}
-		}
+		}()
 	}
+	return s
+}
+
+func (s *Simulation) ExportPNG(name string) *Simulation {
+	s.canvas.PNG(name)
+	return s
 }
 
 func NewSimulation(opts SimulationOptions) *Simulation {

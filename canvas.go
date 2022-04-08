@@ -49,7 +49,7 @@ func (c *Canvas) PNG(name string) {
 	}
 }
 
-func (c *Canvas) Set(x, y int, rawpx RawPixel) {
+func (c *Canvas) Set(x, y int, rawpx *RawPixel) {
 	px := c.Grid[x][y]
 	px.Name, px.At = rawpx.Name, rawpx.At
 	parseHex(px, rawpx.Hex)
