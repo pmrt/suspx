@@ -14,14 +14,12 @@ import (
 	"github.com/pmrt/suspx/global"
 	"github.com/pmrt/suspx/instruments"
 	"github.com/pmrt/suspx/pixel"
-	"github.com/pmrt/suspx/utils"
 )
 
 var (
-	width    int
-	height   int
-	out      string
-	download bool
+	width  int
+	height int
+	out    string
 )
 
 type SimulationOptions struct {
@@ -40,12 +38,6 @@ func (s *Simulation) Setup() *Simulation {
 	s.inst = askInstrument(insts)
 	s.inst.Setup()
 	flag.Parse()
-
-	if download {
-		utils.DownloadAll()
-		fmt.Println("[+] All parts downloaded. decompress and re-run with the desired parameters")
-		os.Exit(0)
-	}
 
 	s.canvas = canvas.New(width, height)
 	s.canvas.FillEmpty()
@@ -151,6 +143,5 @@ func askInstrument(insts map[string]instruments.Instrument) instruments.Instrume
 func init() {
 	flag.IntVar(&width, "w", 2000, "Pixel width of the canvas")
 	flag.IntVar(&height, "h", 2000, "Pixel height of the canvas")
-	flag.BoolVar(&download, "d", false, "If a -d argument is provided, the download tool will be executed")
 	flag.StringVar(&out, "o", "res.png", "Resulting PNG filename")
 }

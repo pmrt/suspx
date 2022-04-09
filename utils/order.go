@@ -2,10 +2,12 @@ package utils
 
 import (
 	"encoding/csv"
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/pmrt/suspx/global"
@@ -35,7 +37,10 @@ func OrderCSV() ([]string, []*Filestats) {
 	datasets := FindCSV(".")
 
 	if len(datasets) == 0 {
-		panic("No CSV datasets found in current path")
+		if askDownload("No CSV datasets found, do you want to initialize the download tool?") {
+			DownloadAll()
+			os.Exit(0)
+		}
 	}
 
 	// slice with file details for later sorting
@@ -75,4 +80,18 @@ func OrderCSV() ([]string, []*Filestats) {
 		all = append(all, stat.Name)
 	}
 	return all, filestats
+}
+
+func askDownload(msg string) bool {
+	var dl string
+	for {
+		fmt.Printf("%s (y/n): ", msg)
+		fmt.Scanln(&dl)
+		switch strings.ToLower(dl) {
+		case "y", "yes":
+			return true
+		case "n", "no":
+			os.Exit(0)
+		}
+	}
 }

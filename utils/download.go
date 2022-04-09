@@ -145,6 +145,7 @@ func DownloadAll() {
 		}()
 	}
 	wg.Wait()
+	fmt.Println("[+] All parts downloaded. decompress and re-run with the desired parameters")
 }
 
 func filenameFromURL(rawurl string) string {
