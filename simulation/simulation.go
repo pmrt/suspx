@@ -111,7 +111,7 @@ func (s *Simulation) Run() *Simulation {
 		}()
 	}
 	fmt.Printf("\n")
-	s.inst.Report(&s.ht)
+	s.inst.After(&s.ht, s.canvas)
 	if s.inst.ShouldExport() {
 		s.ExportPNG()
 	}

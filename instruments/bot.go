@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/pmrt/suspx/canvas"
 	"github.com/pmrt/suspx/pixel"
 )
 
@@ -63,7 +64,7 @@ func (b *BotInstrument) Bucket() InstrumentBucket {
 }
 
 // No reports needed
-func (b *BotInstrument) Report(ht *Hashtable) {}
+func (b *BotInstrument) After(ht *Hashtable, c *canvas.Canvas) {}
 
 func (b *BotInstrument) ShouldExport() bool {
 	return true

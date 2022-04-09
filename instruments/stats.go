@@ -3,6 +3,7 @@ package instruments
 import (
 	"fmt"
 
+	"github.com/pmrt/suspx/canvas"
 	"github.com/pmrt/suspx/pixel"
 )
 
@@ -44,7 +45,7 @@ func (b *StatsInstrument) ShouldExport() bool {
 	return false
 }
 
-func (s *StatsInstrument) Report(ht *Hashtable) {
+func (s *StatsInstrument) After(ht *Hashtable, c *canvas.Canvas) {
 	fmt.Printf("\n* The user with most pixels placed have placed %d pixels\n", s.maxPlaced)
 	fmt.Printf("* A total of %d users placed a pixel\n", len(*ht))
 }
