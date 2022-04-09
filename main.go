@@ -54,7 +54,7 @@ func main() {
 	fmt.Printf("Datasets (%d): %v\n", len(datasets), datasets)
 	fmt.Println(Section)
 	fmt.Printf(
-		"First rows of datasets range from: (%v) to (%v).\n",
+		"First rows of datasets range from: (%v) to (%v)\n",
 		filestats[0].FirstRowTimestamp, filestats[len(filestats)-1].FirstRowTimestamp,
 	)
 
@@ -89,7 +89,7 @@ func main() {
 		Setup().
 		Run().
 		ExportPNG(out)
-	fmt.Printf("canvas exported to %s\n", out)
+	fmt.Printf("[+] canvas exported to %s\n", out)
 }
 
 func init() {
