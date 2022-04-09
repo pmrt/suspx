@@ -100,15 +100,15 @@ func (s *Simulation) Run() *Simulation {
 				}
 				bucket := s.ht[name]
 				// If the sus threshold is surpassed, the following consecutive
-				// suspicious pixels are drawn on the canvas
+				// suspicious pixels are drawn on the canvas...
 				if s.Suspicious(raw) {
 					if bucket.isFull() {
 						s.canvas.Set(x, y, raw)
 					} else {
 						bucket.AddSus(1)
 					}
-				} else {
-					// Reset the bucket otherwise so we only draw consecutive pixels
+				} else if !nonConsecutive {
+					// ...reset the bucket otherwise so we only draw consecutive pixels
 					bucket.ResetSus()
 				}
 				bucket.LastPx = raw

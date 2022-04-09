@@ -29,7 +29,7 @@ type Filestats struct {
 	FirstRowTimestamp time.Time
 }
 
-func orderCSV() []string {
+func orderCSV() ([]string, []*Filestats) {
 	datasets := findCSV(".")
 
 	if len(datasets) == 0 {
@@ -72,5 +72,5 @@ func orderCSV() []string {
 	for _, stat := range filestats {
 		all = append(all, stat.Name)
 	}
-	return all
+	return all, filestats
 }
