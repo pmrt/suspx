@@ -19,6 +19,7 @@ var (
 	download  bool
 )
 
+// TODO - Make out name with params if not specified
 func main() {
 	if download {
 		downloadAll()
