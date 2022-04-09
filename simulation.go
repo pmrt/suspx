@@ -20,8 +20,9 @@ type SimulationOptions struct {
 
 type Simulation struct {
 	SimulationOptions
-	canvas *Canvas
-	ht     Hashtable
+	canvas    *Canvas
+	ht        Hashtable
+	maxPlaced int
 }
 
 func (s *Simulation) Setup() *Simulation {
@@ -104,17 +105,25 @@ func (s *Simulation) Run() *Simulation {
 					if bucket.isFull() {
 						s.canvas.Set(x, y, raw)
 					} else {
-						bucket.Add(1)
+						bucket.AddSus(1)
 					}
 				} else {
 					// Reset the bucket otherwise so we only draw consecutive pixels
-					bucket.Reset()
+					bucket.ResetSus()
 				}
 				bucket.LastPx = raw
+
+				bucket.AddAll(1)
+				nplaced := bucket.All()
+				if nplaced > s.maxPlaced {
+					s.maxPlaced = nplaced
+				}
 			}
 		}()
 	}
 	fmt.Printf("\n")
+	fmt.Printf("* A total of %d users placed a pixel\n", len(s.ht))
+	fmt.Printf("* The user with most pixels placed have placed %d pixels\n", s.maxPlaced)
 	return s
 }
 

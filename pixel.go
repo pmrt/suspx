@@ -23,16 +23,30 @@ type PixelBucket struct {
 	threshold int
 	// Number of suspicious pixels in the bucket
 	sus int
+	// Number of all pixels placed
+	all int
 	// Last pixel by the same user
 	LastPx *RawPixel
 }
 
-func (b *PixelBucket) Add(n int) {
+func (b *PixelBucket) AddSus(n int) {
 	b.sus = b.sus + n
 }
 
-func (b *PixelBucket) Reset() {
+func (b *PixelBucket) ResetSus() {
 	b.sus = 0
+}
+
+func (b *PixelBucket) AddAll(n int) {
+	b.all = b.all + n
+}
+
+func (b *PixelBucket) ResetAll() {
+	b.all = 0
+}
+
+func (b *PixelBucket) All() int {
+	return b.all
 }
 
 func (b *PixelBucket) isFull() bool {
