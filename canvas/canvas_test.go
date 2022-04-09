@@ -1,9 +1,9 @@
-package main
+package canvas
 
 import "testing"
 
 func TestParseCoord(t *testing.T) {
-	x, y, err := parseCoord("\"134,1634\"")
+	x, y, err := ParseCoord("\"134,1634\"")
 	if err != nil {
 		t.Fatal(err)
 	}

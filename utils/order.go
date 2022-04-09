@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"encoding/csv"
@@ -7,9 +7,11 @@ import (
 	"path/filepath"
 	"sort"
 	"time"
+
+	"github.com/pmrt/suspx/global"
 )
 
-func findCSV(path string) []string {
+func FindCSV(path string) []string {
 	all := make([]string, 0, 10)
 	filepath.WalkDir(path, func(s string, d fs.DirEntry, err error) error {
 		if err != nil {
@@ -29,8 +31,8 @@ type Filestats struct {
 	FirstRowTimestamp time.Time
 }
 
-func orderCSV() ([]string, []*Filestats) {
-	datasets := findCSV(".")
+func OrderCSV() ([]string, []*Filestats) {
+	datasets := FindCSV(".")
 
 	if len(datasets) == 0 {
 		panic("No CSV datasets found in current path")
@@ -54,7 +56,7 @@ func orderCSV() ([]string, []*Filestats) {
 		if err != nil {
 			panic(err)
 		}
-		t, err := time.Parse(TimeLayout, peek[0])
+		t, err := time.Parse(global.TimeLayout, peek[0])
 		if err != nil {
 			panic(err)
 		}

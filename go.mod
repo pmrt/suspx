@@ -1,3 +1,3 @@
-module pedro.to/place
+module github.com/pmrt/suspx
 
 go 1.18

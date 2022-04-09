@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"fmt"
@@ -94,7 +94,7 @@ var csvParts = []string{
 	"https://placedata.reddit.com/data/canvas-history/2022_place_canvas_history-000000000078.csv.gzip",
 }
 
-func downloadAll() {
+func DownloadAll() {
 	fmt.Println("Download Tool initialized")
 	l := len(csvParts)
 	dl := make(chan string, l)
