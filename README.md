@@ -205,9 +205,56 @@ as the executable. From 0 to 78.
 
 ## 8. Instrument API
 
-TODO - Describe the exact methods for the instruments and buckets. In the
-meantime you can take a look at the instruments in the `instruments` package if
-you want to add your own instrument for a new analysis.
+For creating your own instruments please take the [instrument package](https://github.com/pmrt/suspx/blob/ddf3786edc1af9174b05056e5f6a1bfa06e8791c/instruments/bot.go)
+as an example. Basically, you have to implement your instrument and bucket with the
+Instrument and InstrumentBucket interfaces [here](https://github.com/pmrt/suspx/blob/ddf3786edc1af9174b05056e5f6a1bfa06e8791c/instruments/instruments.go)
+
+A instrument consists of:
+
+- `Run(b InstrumentBucket, rawpx *pixel.RawPixel, ht *Hashtable) bool`. The run
+  method is invoked on each pixel iteration. It pass down the bucket (which you
+  may want to cast back to the specific instrument bucket type so you can use
+  your methods instead of the interface), the current pixel being processed and
+  a pointer to the whole hashtable.
+
+  The result of the run method is a boolean, if the run method returns a `true`
+  value, the simulator will draw the current pixel on the canvas. Otherwise, if
+  you don't want the pixel to be drawn return `false`.
+
+- `Bucket() InstrumentBucket`. The bucket method tells the simulator how to
+  instantiate a new bucket. It will invoked for each new user.
+
+- `Setup()`. The setup method is the place where you can initialize your
+  instrument before the simulation. The command flags are parsed afer calling
+  this method, so you can define flags (arguments to be passed to the program)
+  and read them or log any parameter for the user. [See the Setup() method in the bot instrument](https://github.com/pmrt/suspx/blob/ddf3786edc1af9174b05056e5f6a1bfa06e8791c/instruments/bot.go#L73)
+
+- `After(ht *Hashtable, c *canvas.Canvas)`. After is invoked after the
+  simulation with the final result of the hashtable (which contains all the
+  users and their buckets) and the result of the canvas. You can report here the
+  results of your analysis if needed or make your graphics depending on the
+  canvas and hashtable state. [See the After() method in the stats
+  instruments](https://github.com/pmrt/suspx/blob/ddf3786edc1af9174b05056e5f6a1bfa06e8791c/instruments/stats.go#L48).
+  The stats instrument uses it to report the stats.
+
+- `ShouldExport() bool`. With this method, your instrument can tell the
+  simulator whether to export or not the resulting canvas as PNG after the
+  simulation.
+
+Your instrument needs a bucket, which is shared by pixels of the same user.
+Store here what you need to be scoped to each user and its pixels. The bucket
+only needs one method to be implemented:
+
+- `String() string`. As a convention, return the name of the bucket here.
+
+It is recommended to store the name in a constant, for example: const
+StatsInstrumentName = "stats" because you are going to need it now.
+
+Once you have your instrument and bucket implemented all you have to do is to
+add your instrument to the general instrument Setup() function [here](https://github.com/pmrt/suspx/blob/master/instruments/instruments.go)
+
+That's it, compile it and you will be able to select your instrument for your
+simulations. Please, share it and open a PR!
 
 ## 9. Contributors
 
