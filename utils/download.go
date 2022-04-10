@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ import (
 	"sync"
 )
 
-const MaxConcurrentDownloads = 3
+const MaxConcurrentDownloads = 5
 
 var csvParts = []string{
 	"https://placedata.reddit.com/data/canvas-history/2022_place_canvas_history-000000000000.csv.gzip",
@@ -94,7 +94,7 @@ var csvParts = []string{
 	"https://placedata.reddit.com/data/canvas-history/2022_place_canvas_history-000000000078.csv.gzip",
 }
 
-func downloadAll() {
+func DownloadAll() {
 	fmt.Println("Download Tool initialized")
 	l := len(csvParts)
 	dl := make(chan string, l)
@@ -145,6 +145,7 @@ func downloadAll() {
 		}()
 	}
 	wg.Wait()
+	fmt.Println("[+] All parts downloaded. decompress and re-run with the desired parameters")
 }
 
 func filenameFromURL(rawurl string) string {

@@ -1,15 +1,19 @@
-package main
+package utils
 
 import (
 	"encoding/csv"
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"time"
+
+	"github.com/pmrt/suspx/global"
 )
 
-func findCSV(path string) []string {
+func FindCSV(path string) []string {
 	all := make([]string, 0, 10)
 	filepath.WalkDir(path, func(s string, d fs.DirEntry, err error) error {
 		if err != nil {
@@ -29,11 +33,14 @@ type Filestats struct {
 	FirstRowTimestamp time.Time
 }
 
-func orderCSV() ([]string, []*Filestats) {
-	datasets := findCSV(".")
+func OrderCSV() ([]string, []*Filestats) {
+	datasets := FindCSV(".")
 
 	if len(datasets) == 0 {
-		panic("No CSV datasets found in current path")
+		if askDownload("No CSV datasets found, do you want to initialize the download tool?") {
+			DownloadAll()
+			os.Exit(0)
+		}
 	}
 
 	// slice with file details for later sorting
@@ -54,7 +61,7 @@ func orderCSV() ([]string, []*Filestats) {
 		if err != nil {
 			panic(err)
 		}
-		t, err := time.Parse(TimeLayout, peek[0])
+		t, err := time.Parse(global.TimeLayout, peek[0])
 		if err != nil {
 			panic(err)
 		}
@@ -73,4 +80,18 @@ func orderCSV() ([]string, []*Filestats) {
 		all = append(all, stat.Name)
 	}
 	return all, filestats
+}
+
+func askDownload(msg string) bool {
+	var dl string
+	for {
+		fmt.Printf("%s (y/n): ", msg)
+		fmt.Scanln(&dl)
+		switch strings.ToLower(dl) {
+		case "y", "yes":
+			return true
+		case "n", "no":
+			os.Exit(0)
+		}
+	}
 }

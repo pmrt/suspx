@@ -1,4 +1,4 @@
-package main
+package canvas
 
 import (
 	"errors"
@@ -8,20 +8,22 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/pmrt/suspx/pixel"
 )
 
 type Canvas struct {
 	Width, Height int
 	Colors        [24]color.RGBA
-	Grid          [][]*Pixel
+	Grid          [][]*pixel.Pixel
 }
 
 func (c *Canvas) FillEmpty() {
-	c.Grid = make([][]*Pixel, c.Height)
+	c.Grid = make([][]*pixel.Pixel, c.Height)
 	for x := 0; x < c.Height; x++ {
-		c.Grid[x] = make([]*Pixel, c.Height)
+		c.Grid[x] = make([]*pixel.Pixel, c.Height)
 		for y := 0; y < c.Width; y++ {
-			c.Grid[x][y] = &Pixel{
+			c.Grid[x][y] = &pixel.Pixel{
 				Color: &color.RGBA{255, 255, 255, 0xff},
 			}
 		}
@@ -50,15 +52,15 @@ func (c *Canvas) PNG(name string) {
 	}
 }
 
-func (c *Canvas) Set(x, y int, rawpx *RawPixel) {
+func (c *Canvas) Set(x, y int, rawpx *pixel.RawPixel) {
 	px := c.Grid[x][y]
 	px.Name, px.At = rawpx.Name, rawpx.At
-	parseHex(px, rawpx.Hex)
+	ParseHex(px, rawpx.Hex)
 }
 
 var ErrModerationTool = errors.New("coordinates from the moderation rect tool")
 
-func parseCoord(pos string) (x int, y int, err error) {
+func ParseCoord(pos string) (x int, y int, err error) {
 	pos = strings.ReplaceAll(pos, "\"", "")
 	parts := strings.Split(pos, ",")
 
@@ -79,7 +81,7 @@ func parseCoord(pos string) (x int, y int, err error) {
 }
 
 // Thanks to @icza for the OG hex2rgba function.
-func parseHex(dst *Pixel, hex string) {
+func ParseHex(dst *pixel.Pixel, hex string) {
 	c := dst.Color
 	c.A = 0xff
 
@@ -114,7 +116,7 @@ func parseHex(dst *Pixel, hex string) {
 
 }
 
-func NewCanvas(w, h int) *Canvas {
+func New(w, h int) *Canvas {
 	c := &Canvas{
 		Width:  w,
 		Height: h,
