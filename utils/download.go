@@ -10,7 +10,7 @@ import (
 	"sync"
 )
 
-const MaxConcurrentDownloads = 3
+const MaxConcurrentDownloads = 5
 
 var csvParts = []string{
 	"https://placedata.reddit.com/data/canvas-history/2022_place_canvas_history-000000000000.csv.gzip",
