@@ -38,7 +38,7 @@ saving a considerable amount of time.
 It runs a simulation with the datasets (CSV files) found in the same path as the
 executable, reading and processing pixel by pixel in the correspondig order. The
 different analysis tools are called **instruments**. Each placed pixel involves
-a **instrument bucket** being added/retrieved to/from a hashtable grouped by
+an **instrument bucket** being added/retrieved to/from a hashtable grouped by
 users, so the **bucket** is shared across different pixels iterations for the
 same user. Each **instrument** decides what to store in its bucket, for example
 the bot instrument stores that last pixel placed by the same user and the number
@@ -146,8 +146,8 @@ download all the parts.
 3. Decompress the parts. In linux you may want to use: `gunzip *.gzip` or `gzip
    -d *.gzip`. If you get an error, try renaming them from .gzip to .gz, here is
    a one liner command: `for f in *.gzip; do mv -- "$f" "${f%.gzip}.gz"; done`.
-
-On Windows or MacOS you just have to find an appropiate zip tool for gzip files.
+   On Windows or MacOS you just have to find an appropiate zip tool for gzip
+   files.
 
 Again, please verify that all the CSV parts are available in the same directory
 as the executable. From 0 to 78.
