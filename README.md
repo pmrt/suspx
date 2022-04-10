@@ -209,7 +209,7 @@ For creating your own instruments please take the [instrument package](https://g
 as an example. Basically, you have to implement your instrument and bucket with the
 Instrument and InstrumentBucket interfaces [here](https://github.com/pmrt/suspx/blob/ddf3786edc1af9174b05056e5f6a1bfa06e8791c/instruments/instruments.go)
 
-A instrument consists of:
+An instrument consists of:
 
 - `Run(b InstrumentBucket, rawpx *pixel.RawPixel, ht *Hashtable) bool`. The run
   method is invoked on each pixel iteration. It pass down the bucket (which you
@@ -221,8 +221,12 @@ A instrument consists of:
   value, the simulator will draw the current pixel on the canvas. Otherwise, if
   you don't want the pixel to be drawn return `false`.
 
+  [Take the Run() method in the bot instrument as an example](https://github.com/pmrt/suspx/blob/70e758734c40cab73a4ae6e4477caf0ce14c21e6/instruments/bot.go#L32)
+  Notice how it casts the type back to the BotBucket type so it can use its
+  methods and fields.
+
 - `Bucket() InstrumentBucket`. The bucket method tells the simulator how to
-  instantiate a new bucket. It will invoked for each new user.
+  instantiate a new bucket. It will be invoked for each new user.
 
 - `Setup()`. The setup method is the place where you can initialize your
   instrument before the simulation. The command flags are parsed afer calling
@@ -233,7 +237,7 @@ A instrument consists of:
   simulation with the final result of the hashtable (which contains all the
   users and their buckets) and the result of the canvas. You can report here the
   results of your analysis if needed or make your graphics depending on the
-  canvas and hashtable state. [See the After() method in the stats
+  canvas and hashtable states. [See the After() method in the stats
   instruments](https://github.com/pmrt/suspx/blob/ddf3786edc1af9174b05056e5f6a1bfa06e8791c/instruments/stats.go#L48).
   The stats instrument uses it to report the stats.
 
@@ -247,8 +251,8 @@ only needs one method to be implemented:
 
 - `String() string`. As a convention, return the name of the bucket here.
 
-It is recommended to store the name in a constant, for example: const
-StatsInstrumentName = "stats" because you are going to need it now.
+It is recommended to store the name in a constant, for example: `const
+StatsInstrumentName = "stats"` because you are going to need it now.
 
 Once you have your instrument and bucket implemented all you have to do is to
 add your instrument to the general instrument Setup() function [here](https://github.com/pmrt/suspx/blob/master/instruments/instruments.go)
