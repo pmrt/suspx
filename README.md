@@ -130,7 +130,8 @@ A screenshot of the site: ![Screen Shot 2022-04-09 at 14 57 28](https://user-ima
 
 ## 5. Usage
 
-1. Download the tool executable (in releases) or compile it by your own.
+1. Download the tool executable [here in releases](https://github.com/pmrt/suspx/releases/tag/v1.0.0) 
+or compile it by your own.
 
 Minimum 16GB RAM is recommended since the hashtable will grow to roughly 8GB for
 the 2022 version, containing all the users who placed at least 1 pixel. You will
