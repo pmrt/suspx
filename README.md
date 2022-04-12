@@ -57,7 +57,7 @@ passed to the program: a **time margin** (m) in milliseconds, the **cooldown**
 
 - The **cooldown** determines the cooldown between pixels (default: 5 minutes).
 - The **time margin** determines the extra time added to the **cooldown**, in
-  order words, the margin defines the extra time for the user to react since the
+  other words, the margin defines the extra time for the user to react since the
   next pixel is available. Once this margin is surpassed, the pixel is no longer
   considered suspicious.
 - The **threshold** parameter determines how many consecutive suspicious pixels
